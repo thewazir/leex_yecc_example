@@ -4,7 +4,7 @@
 ERLANG
 JAN 13 2014
 
-leex and yecc are the Lex and Yacc of the Erlang toolset. Whilst there is ample documentation about using the standard Unix lexer and parser generators, the Erlang equivalents are far less documented. This article1 demonstrates how to use leex and yecc to build a parser in Erlang that can process a subset of SQL-92.
+[leex](http://erlang.org/doc/man/leex.html) and [yecc](http://erlang.org/doc/man/yecc.html) are the [Lex and Yacc](http://dinosaur.compilertools.net/) of the Erlang toolset. Whilst there is ample documentation about using the standard Unix lexer and parser generators, the Erlang equivalents are far less documented. This article1 demonstrates how to use leex and yecc to build a parser in Erlang that can process a subset of [SQL-92](http://www.contrib.andrew.cmu.edu/~shadow/sql/sql1992.txt).
 
 The goal of this mini-project is to:
 
