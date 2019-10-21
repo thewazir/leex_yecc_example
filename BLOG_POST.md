@@ -34,7 +34,7 @@ Strictly speaking, you could build this parser without leex, by just using a yec
 By using a lexer grammar, you have full control over the way the input stream is tokenized. The upshot is that you have a more natural fit for your input language and you simplify the parser grammar that is consuming the tokens because you are supplying it with language specific tokens rather than generic Erlang tokens.
 
 ### Getting The Source
-The source for this example is available [here](https://github.com/relops/leex_yecc_example. You can compile it using the supplied Makefile. If it compiles successfully, the unit tests will execute and you should see the following output:
+The source for this example is available [here](https://github.com/relops/leex_yecc_example). You can compile it using the supplied Makefile. If it compiles successfully, the unit tests will execute and you should see the following output:
 
 ```
 $ make
