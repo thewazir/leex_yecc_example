@@ -34,7 +34,7 @@ Strictly speaking, you could build this parser without leex, by just using a yec
 By using a lexer grammar, you have full control over the way the input stream is tokenized. The upshot is that you have a more natural fit for your input language and you simplify the parser grammar that is consuming the tokens because you are supplying it with language specific tokens rather than generic Erlang tokens.
 
 ### Getting The Source
-The source for this example is available [here](). You can compile it using the supplied Makefile. If it compiles successfully, the unit tests will execute and you should see the following output:
+The source for this example is available [here](https://github.com/relops/leex_yecc_example. You can compile it using the supplied Makefile. If it compiles successfully, the unit tests will execute and you should see the following output:
 
 ```
 $ make
@@ -90,15 +90,15 @@ The lexer grammar contains three sections:
 1. Rules - these tell the lexer what series of characters to expect and what token to output when a match occurs
 1. Erlang code - this contains functions that can be used in the rule definitions
 
-So, for example, if the input stream contains the literal 'abc' (including the quotation marks), the rule '{L}+' would fire. This rule would then strip off the leading and trailing quotation marks and pass the token {string,TokenLine,"abc"} to the parser.
+So, for example, if the input stream contains the literal `'abc'` (including the quotation marks), the rule `'{L}+'` would fire. This rule would then strip off the leading and trailing quotation marks and pass the token `{string,TokenLine,"abc"}` to the parser.
 
-The TokenLine variable is just the tokenâ€™s position in the text and will not be used by our parser grammar. However, this must be supplied in the lexer grammar because the parser that yecc generates expects tokens in the following form:
+The `TokenLine` variable is just the tokens position in the text and will not be used by our parser grammar. However, this must be supplied in the lexer grammar because the parser that `yecc` generates expects tokens in the following form:
 
 * Syntactic category of the token
 * Position where it was found in the input
 * The actual terminal symbol that was found in the input
 
-Once you have your grammar, save it with the ending .xrl to denote that it is a leex grammar. In this mini-project, the grammar is called selector_lexer.xrl. In an Erlang shell, you can now use leex to generate a scanner:
+Once you have your grammar, save it with the ending `.xrl` to denote that it is a leex grammar. In this mini-project, the grammar is called `selector_lexer.xrl`. In an Erlang shell, you can now use `leex` to generate a scanner:
 
 ```
 1> leex:file(selector_lexer).
@@ -107,7 +107,7 @@ NFA contains 62 states, DFA contains 27 states, minimised to 22 states.
 Writing file selector_lexer.erl, ok
 ```
 
-This has converted the lexer grammar into an Erlang module of the same name but with the ending .erl. This can be compiled as a normal Erlang module.
+This has converted the lexer grammar into an Erlang module of the same name but with the ending `.erl`. This can be compiled as a normal Erlang module.
 
 This whole step is done for you if you use the Makefile that is supplied in the project source.
 
@@ -121,11 +121,11 @@ Now that you have an input stream that is tokenized in the way you want it, you 
 1. Rules - these tell the parser how to classify and structure the tokens it is consuming. A rule has a name, the pattern it matches and the action to be taken when the rule fires. These return the final data structures to the application, so this is the point where you can perform any contextual transformations that are necessary
 1. Erlang code - as with the lexer grammar, this is where you can define functions to abbreviate the actions defined in the rules
 
-In our example, we are going to group the input tokens into constructs called predicates. An example predicate is A = 22, which syntactically consists of a variable, a comparator and an integer. In the subset of SQL, predicates can be joined together using and and or. In this case, an intersection or a union of predicates is built, depending on which conjunctive joined them together.
+In our example, we are going to group the input tokens into constructs called predicates. An example predicate is `A = 22`, which syntactically consists of a variable, a comparator and an integer. In the subset of SQL, predicates can be joined together using `and` and `or`. In this case, an intersection or a union of predicates is built, depending on which conjunctive joined them together.
 
-For example, the SQL statement A = 22 or B < 10 converts syntactically to a union of two predicates, A = 22 and B < 10.
+For example, the SQL statement `A = 22 or B < 10` converts syntactically to a union of two predicates, `A = 22` and `B < 10`.
 
-If you look at the following grammar you will see that A = 22 matches the rule predicate -> var comparator element and A = 22 or B < 10 matches the rule predicates -> predicate union predicate:
+If you look at the following grammar you will see that `A = 22` matches the rule `predicate -> var comparator element` and `A = 22 or B < 10` matches the rule `predicates -> predicate union predicate`:
 
 ```
 Nonterminals 
@@ -164,7 +164,7 @@ Erlang code.
 unwrap({_,_,V}) -> V.
 ```
 
-Now that you have a parser grammar, you can use yecc to generate a parser. Yecc grammars are saved with the ending .yrl. In our mini-project the grammar file is called selector_parser.yrl. In an Erlang shell, execute the following command:
+Now that you have a parser grammar, you can use yecc to generate a parser. Yecc grammars are saved with the ending `.yrl`. In our mini-project the grammar file is called `selector_parser.yrl`. In an Erlang shell, execute the following command:
 
 ```erlang
 2> yecc:file(selector_parser).
@@ -172,17 +172,17 @@ selector_parser.yrl: Warning: conflicts: 1 shift/reduce, 0 reduce/reduce
 {ok,"selector_parser.erl"}
 ```
 
-This has generated a parser with the same name as the base name of the grammar but with the ending .erl. This can now be compiled as a normal Erlang module. As with the lexer grammar, this step is also performed automatically using the Makefile.
+This has generated a parser with the same name as the base name of the grammar but with the ending `.erl`. This can now be compiled as a normal Erlang module. As with the lexer grammar, this step is also performed automatically using the Makefile.
 
 ### Combining The Lexer And The Parser
-Combining the generated lexer and parser to process an input string is a straightforward step. Because we are dealing with a very short input text that can be easily held in memory, we can use the string/1 function that leex has generated. Parsing an input string is as simple as:
+Combining the generated lexer and parser to process an input string is a straightforward step. Because we are dealing with a very short input text that can be easily held in memory, we can use the `string/1` function that leex has generated. Parsing an input string is as simple as:
 
 ```erlang
 {ok, Tokens, EndLine} = ?LEXER:string("A = 22 or B < 10"),
 {ok, ParseTree} = ?PARSER:parse(Tokens)
 ```
 
-where ?LEXER and ?PARSER are the names of the modules generated by leex and yecc respectively. The value of the ParseTree in this example is:
+where `?LEXER` and `?PARSER` are the names of the modules generated by leex and yecc respectively. The value of the ParseTree in this example is:
 
 ```erlang
 {union,{predicate,{var,'A'},'=',22},
@@ -209,7 +209,7 @@ loop(InFile,Acc) ->
     end.
 ```
 
-This uses the io:request/2 call that uses the lexer to tokenize the input stream. The use of the token flag indicates that you want read the stream on a token-by-token basis. If you want to read all tokens in the current line, then use the tokens flag instead. This will return a list of tokens. This is an undocumented feature in OTP, probably because it is intended for internal usage only, so use it with caution because the interface may change.
+This uses the `io:request/2` call that uses the lexer to tokenize the input stream. The use of the `token` flag indicates that you want read the stream on a token-by-token basis. If you want to read all tokens in the current line, then use the `tokens` flag instead. This will return a list of tokens. This is an undocumented feature in OTP, probably because it is intended for internal usage only, so use it with caution because the interface may change.
 
 ### Using The Parse Tree
 Once you have your parse tree, you can use it to process data in your application. The structure on the parse tree depends on how you write the rules in the parser grammar. Obviously you can do more or less inside the grammar or in your application code to achieve a data structure that is useable by your application. That is a pure design decision.
@@ -218,6 +218,7 @@ If you recall from the introduction to this mini-project, we wanted to:
 
 1. Parse a mini SQL statement to form a match specification object
 1. Perform a match operation using this specification against a key value map
+
 The code for the first step is straightforward and has been illustrated in the preceding section:
 
 ```erlang
@@ -254,11 +255,11 @@ compare(_,_,_) -> false.
 
 Here you can see that we are using standard Erlang pattern matching that depends on the specification that is parsed from the SQL statement. Each predicate has a variable that it needs to compare against a specific value in a specific way. It retrieves the value of the variable to be tested from the map. If there is no value under that key in the map, it returns false because it cannot perform a comparison.
 
-After it has the test value, it performs a comparison using the comparator specified by the parse tree. In this example we have the following comparators: memberof, =, >, <, >=, =<. The value that the test value is compared with is specified by the Critereon variable.
+After it has the test value, it performs a comparison using the comparator specified by the parse tree. In this example we have the following comparators: `memberof`, `=`, `>`, `<`, `>=`, `=<`. The value that the test value is compared with is specified by the Critereon variable.
 
 ### Testing The Application
 
-There is a complete test suite based on Eunit in the project source called selector_test.erl. For example, to test an SQL and clause, you can use the following:
+There is a complete test suite based on [Eunit](http://www.erlang.org/doc/man/eunit.html) in the project source called `selector_test.erl`. For example, to test an SQL `and` clause, you can use the following:
 
 ```erlang
 and_test() ->
@@ -269,7 +270,7 @@ and_test() ->
     ?assert(selector:matches(Spec,TestData1)).
 ```
 
-This shows the usage of the assert macro from Eunit that evaluates the boolean return value from matches/2. You can find more test examples in the test module.
+This shows the usage of the assert macro from Eunit that evaluates the boolean return value from `matches/2`. You can find more test examples in the test module.
 
 ## Outlook
 The goal of this article was to demonstrate the use of leex and yecc in a practical context. The input grammar was kept simple in order to keep the focus on the overall process flow from an end-to-end perspective. Hopefully, more examples of more complicated parser generation will be published in the future.
